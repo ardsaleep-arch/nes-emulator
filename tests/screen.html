@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>screen</title>
+<style>body{margin:0;background:#222}canvas{width:768px;image-rendering:pixelated}</style>
+<canvas id="c" width="256" height="240"></canvas>
+<script type="module">
+import { NES } from '../src/nes.js';
+const p = new URLSearchParams(location.search);
+const nes = new NES();
+nes.load(new Uint8Array(await fetch(`roms/${p.get('rom')}`).then((r) => r.arrayBuffer())));
+for (let i = 0; i < +(p.get('frames') || 120); i++) { nes.frame(); nes.apu.sampleCount = 0; }
+const c = document.getElementById('c').getContext('2d');
+const img = c.createImageData(256, 240);
+new Uint32Array(img.data.buffer).set(nes.ppu.framebuffer);
+c.putImageData(img, 0, 0);
+document.title = 'done';
+</script>
