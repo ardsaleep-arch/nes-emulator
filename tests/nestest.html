@@ -1,0 +1,44 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>nestest</title>
+<pre id="out">running…</pre>
+<script type="module">
+import { NES } from '../src/nes.js';
+addEventListener("error", (e) => fetch("/__result?ERROR " + encodeURIComponent(e.message + " @" + e.filename + ":" + e.lineno)));
+addEventListener("unhandledrejection", (e) => fetch("/__result?REJECT " + encodeURIComponent(String(e.reason && e.reason.stack || e.reason))));
+
+const hex = (s) => parseInt(s, 16);
+const out = document.getElementById('out');
+
+const [rom, log] = await Promise.all([
+  fetch('roms/nestest.nes').then((r) => r.arrayBuffer()),
+  fetch('roms/nestest.log').then((r) => r.text()),
+]);
+
+const nes = new NES();
+nes.load(new Uint8Array(rom));
+const cpu = nes.cpu;
+// automated mode: start at $C000 as in nestest.log
+cpu.pc = 0xc000;
+cpu.cycles = 7;
+
+const lines = log.split('\n').filter(Boolean);
+let result = `PASS (${lines.length} lines)`;
+for (let n = 0; n < lines.length; n++) {
+  const l = lines[n];
+  const m = l.match(/^([0-9A-F]{4}).*A:([0-9A-F]{2}) X:([0-9A-F]{2}) Y:([0-9A-F]{2}) P:([0-9A-F]{2}) SP:([0-9A-F]{2}).*CYC:(\d+)/);
+  const exp = { pc: hex(m[1]), a: hex(m[2]), x: hex(m[3]), y: hex(m[4]), p: hex(m[5]), sp: hex(m[6]), cyc: +m[7] };
+  const got = { pc: cpu.pc, a: cpu.a, x: cpu.x, y: cpu.y, p: cpu.getP(false), sp: cpu.sp, cyc: cpu.cycles };
+  const bad = Object.keys(exp).filter((k) => exp[k] !== got[k]);
+  if (bad.length) {
+    result = `FAIL line ${n + 1}: ${bad.join(',')}\n${l}\nexpected ${JSON.stringify(exp)}\ngot      ${JSON.stringify(got)}`;
+    break;
+  }
+  cpu.step();
+}
+// nestest writes its result codes to $02/$03 (00 = all passed)
+result += `\n$02=${nes.bus.ram[2].toString(16)} $03=${nes.bus.ram[3].toString(16)}`;
+out.textContent = result;
+window.__result = result;
+fetch("/__result?" + encodeURIComponent(result));
+</script>
