@@ -61,5 +61,6 @@ export class Mapper {
   }
 
   writeReg() {}
+  reset() {}
   clockScanline() {}
 }

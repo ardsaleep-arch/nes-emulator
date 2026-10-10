@@ -37,6 +37,7 @@ export class AudioOut {
     this.node = null;
     this.gain = null;
     this.sampleRate = 44100;
+    this.volume = 1;
   }
 
   // Must be called from a user gesture. Resolves to the actual sample rate.
@@ -51,6 +52,7 @@ export class AudioOut {
     await this.ctx.audioWorklet.addModule(url);
     this.node = new AudioWorkletNode(this.ctx, 'nes-player');
     this.gain = this.ctx.createGain();
+    this.gain.gain.value = this.volume;
     this.node.connect(this.gain).connect(this.ctx.destination);
     return this.sampleRate;
   }
@@ -60,6 +62,7 @@ export class AudioOut {
   }
 
   setVolume(v) {
+    this.volume = v;
     if (this.gain) this.gain.gain.value = v;
   }
 }

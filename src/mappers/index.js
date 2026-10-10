@@ -158,7 +158,40 @@ class MMC3 extends Mapper {
   }
 }
 
-const MAPPERS = { 0: NROM, 1: MMC1, 2: UxROM, 3: CNROM, 4: MMC3 };
+// 230: 22-in-1 multicart. Power-on selects Contra (first 128KB); reset switches to the 22-in-1 menu.
+class Multicart230 extends Mapper {
+  constructor(cart) {
+    super(cart);
+    this.contra = true;
+    this.setChr8(0);
+    this.writeReg(0x8000, 0);
+  }
+
+  reset() {
+    this.contra = false;
+    this.writeReg(0x8000, 0);
+  }
+
+  writeReg(addr, v) {
+    if (this.contra) {
+      this.setPrg16(0, v & 7);
+      this.setPrg16(1, 7);
+      this.mirroring = MIRROR.V;
+      return;
+    }
+    const bank = (v & 0x1f) + 8;
+    if (v & 0x20) {
+      this.setPrg16(0, bank);
+      this.setPrg16(1, bank);
+    } else {
+      this.setPrg16(0, bank & ~1);
+      this.setPrg16(1, bank | 1);
+    }
+    this.mirroring = v & 0x40 ? MIRROR.V : MIRROR.H;
+  }
+}
+
+const MAPPERS = { 0: NROM, 1: MMC1, 2: UxROM, 3: CNROM, 4: MMC3, 230: Multicart230 };
 
 export function createMapper(cart) {
   const M = MAPPERS[cart.mapperId];

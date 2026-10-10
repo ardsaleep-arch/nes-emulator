@@ -21,10 +21,16 @@ export class NES {
     this.cart = new Cartridge(data);
     this.bus.mapper = this.cart.mapper;
     this.ppu.mapper = this.cart.mapper;
-    this.reset();
+    this.resetCore();
   }
 
+  // Soft reset (the console's reset button): mappers may react, e.g. multicarts.
   reset() {
+    this.cart.mapper.reset();
+    this.resetCore();
+  }
+
+  resetCore() {
     this.ppu.reset();
     this.ppu.oam.fill(0);
     this.bus.ram.fill(0);
