@@ -82,6 +82,7 @@ export class CPU {
     this.stall = 0;
     this.nmiPending = false;
     this.cycles = 0;
+    this.opCycles = 0;
     this.a = this.x = this.y = this.pc = 0;
     this.sp = 0xfd;
     this.c = this.z = this.i = this.d = this.v = this.n = 0;
@@ -125,6 +126,7 @@ export class CPU {
 
   // Executes one instruction (or interrupt / DMA stall). Returns CPU cycles used.
   step() {
+    this.opCycles = 0;
     if (this.stall > 0) {
       const s = this.stall;
       this.stall = 0;
@@ -192,6 +194,7 @@ export class CPU {
       }
     }
     if (crossed && OP_PENALTY[opcode]) cycles++;
+    this.opCycles = cycles; // lets the bus run the PPU up to this instruction's memory access
 
     cycles += this.exec(OP_NAME[opcode], mode, addr);
     this.cycles += cycles;

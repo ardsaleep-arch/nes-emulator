@@ -42,7 +42,8 @@ export class NES {
     const { cpu, ppu, apu } = this;
     while (!ppu.frameReady) {
       const c = cpu.step();
-      for (let i = c * 3; i > 0; i--) ppu.step();
+      for (let i = c * 3 - this.bus.ppuAhead; i > 0; i--) ppu.step();
+      this.bus.ppuAhead = 0;
       apu.run(c);
     }
     ppu.frameReady = false;
