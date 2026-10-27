@@ -158,6 +158,48 @@ class MMC3 extends Mapper {
   }
 }
 
+// 91: J.Y. Company pirate boards (Street Fighter III, Mortal Kombat II ...).
+// Registers live at $6000-$7FFF; IRQ fires after 8 scanlines once started.
+class JY91 extends Mapper {
+  constructor(cart) {
+    super(cart);
+    this.irqCount = 0;
+    this.irqEnabled = false;
+    this.setPrg8(0, 0);
+    this.setPrg8(1, 0);
+    this.setPrg8(2, this.prgBanks8 - 2);
+    this.setPrg8(3, this.prgBanks8 - 1);
+    this.setChr8(0);
+  }
+
+  cpuWrite(addr, v) {
+    if (addr < 0x6000 || addr >= 0x8000) return;
+    if (addr < 0x7000) {
+      this.setChr2((addr & 3) * 2, v * 2);
+      return;
+    }
+    switch (addr & 3) {
+      case 0:
+      case 1:
+        this.setPrg8(addr & 1, v);
+        break;
+      case 2:
+        this.irqEnabled = false;
+        this.irqCount = 0;
+        this.irq = false;
+        break;
+      case 3:
+        this.irqEnabled = true;
+        this.irq = false;
+        break;
+    }
+  }
+
+  clockScanline() {
+    if (this.irqEnabled && this.irqCount < 8 && ++this.irqCount === 8) this.irq = true;
+  }
+}
+
 // 230: 22-in-1 multicart. Power-on selects Contra (first 128KB); reset switches to the 22-in-1 menu.
 class Multicart230 extends Mapper {
   constructor(cart) {
@@ -191,7 +233,7 @@ class Multicart230 extends Mapper {
   }
 }
 
-const MAPPERS = { 0: NROM, 1: MMC1, 2: UxROM, 3: CNROM, 4: MMC3, 230: Multicart230 };
+const MAPPERS = { 0: NROM, 1: MMC1, 2: UxROM, 3: CNROM, 4: MMC3, 91: JY91, 230: Multicart230 };
 
 export function createMapper(cart) {
   const M = MAPPERS[cart.mapperId];

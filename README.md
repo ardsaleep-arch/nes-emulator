@@ -5,7 +5,7 @@ NES emulator ที่รันในเบราว์เซอร์ เขี
 - CPU 6502 (official + unofficial opcodes ที่ใช้บ่อย) — ผ่าน `nestest` ตรงทุกบรรทัดรวม cycle count
 - PPU ระดับ dot (background + sprites, sprite 0 hit, scroll register จริง)
 - APU: pulse x2, triangle, noise, DMC (ผ่าน AudioWorklet)
-- Mappers: 0 (NROM), 1 (MMC1), 2 (UxROM), 3 (CNROM), 4 (MMC3), 230 (22-in-1 multicart: เปิดเครื่อง = Contra, กดรีเซ็ต = เมนู 22-in-1)
+- Mappers: 0 (NROM), 1 (MMC1), 2 (UxROM), 3 (CNROM), 4 (MMC3), 91 (J.Y. Company), 230 (22-in-1 multicart: เปิดเครื่อง = Contra, กดรีเซ็ต = เมนู 22-in-1)
 - คีย์บอร์ด + Gamepad (ตั้งปุ่มเองได้ทั้งคีย์บอร์ดและเกมแพด เก็บใน localStorage), เต็มจอ (ปุ่ม F หรือดับเบิลคลิกจอ), battery save (localStorage)
 
 ## วิธีรัน
