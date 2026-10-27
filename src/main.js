@@ -1,5 +1,5 @@
 import { NES } from './nes.js';
-import { Input, BUTTON_NAMES } from './input.js';
+import { Input, BUTTON_NAMES, TURBO_RATES } from './input.js';
 import { AudioOut } from './audio.js';
 
 const FRAME_MS = 1000 / 60.0988;
@@ -189,6 +189,10 @@ function startCapture(bit, kind) {
   }
   renderPad();
 }
+
+const turboSel = document.getElementById('turbo');
+TURBO_RATES.forEach((r) => turboSel.add(new Option(`${r} ครั้ง/วินาที`, r, false, r === input.turboRate)));
+turboSel.addEventListener('change', () => input.setTurboRate(Number(turboSel.value)));
 
 document.getElementById('padcfg').addEventListener('click', () => {
   if (document.fullscreenElement) document.exitFullscreen();

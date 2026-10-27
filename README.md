@@ -6,7 +6,7 @@ NES emulator ที่รันในเบราว์เซอร์ เขี
 - PPU ระดับ dot (background + sprites, sprite 0 hit, scroll register จริง)
 - APU: pulse x2, triangle, noise, DMC (ผ่าน AudioWorklet)
 - Mappers: 0 (NROM), 1 (MMC1), 2 (UxROM), 3 (CNROM), 4 (MMC3), 91 (J.Y. Company), 230 (22-in-1 multicart: เปิดเครื่อง = Contra, กดรีเซ็ต = เมนู 22-in-1)
-- คีย์บอร์ด + Gamepad (ตั้งปุ่มเองได้ทั้งคีย์บอร์ดและเกมแพด เก็บใน localStorage), เต็มจอ (ปุ่ม F หรือดับเบิลคลิกจอ), battery save (localStorage)
+- คีย์บอร์ด + Gamepad (ตั้งปุ่มเองได้ทั้งคีย์บอร์ดและเกมแพด, ปุ่ม Turbo A/B เก็บใน localStorage), เต็มจอ (ปุ่ม F หรือดับเบิลคลิกจอ), battery save (localStorage)
 
 ## วิธีรัน
 
@@ -22,6 +22,7 @@ python3 -m http.server 8000
 | Z / X | B / A |
 | Enter | Start |
 | Shift | Select |
+| S / A | Turbo A / Turbo B (ปรับความเร็ว 30/15/10 ครั้งต่อวินาทีในหน้าตั้งค่าปุ่ม) |
 
 ## ทดสอบ
 

@@ -26,6 +26,8 @@
   #padrows button.wait { border-color: var(--accent); color: var(--accent); }
   #padinfo { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
   .row { display: flex; gap: 8px; justify-content: flex-end; }
+  .row.turbo { justify-content: flex-start; margin-bottom: 14px; }
+  select { background: var(--bg); color: var(--fg); border: 1px solid #33334a; border-radius: 6px; padding: 4px 8px; font: inherit; }
   button, label.btn { background: var(--panel); color: var(--fg); border: 1px solid #33334a; border-radius: 6px;
            padding: 8px 14px; font: inherit; cursor: pointer; }
   button:hover, label.btn:hover { border-color: var(--accent); }
@@ -48,12 +50,13 @@
 </div>
 <div id="status">ลากไฟล์ ROM มาวาง หรือกดปุ่มเลือกไฟล์</div>
 <div class="keys">
-  ค่าเริ่มต้น: ลูกศร = ทิศทาง · <kbd>Z</kbd> = B · <kbd>X</kbd> = A · <kbd>Enter</kbd> = Start · <kbd>Shift</kbd> = Select · <kbd>F</kbd> = เต็มจอ · รองรับจอยเกมแพด · ตั้งปุ่มเองได้
+  ค่าเริ่มต้น: ลูกศร = ทิศทาง · <kbd>Z</kbd> = B · <kbd>X</kbd> = A · <kbd>Enter</kbd> = Start · <kbd>Shift</kbd> = Select · <kbd>S</kbd> / <kbd>A</kbd> = Turbo A / B · <kbd>F</kbd> = เต็มจอ · รองรับจอยเกมแพด · ตั้งปุ่มเองได้
 </div>
 <dialog id="paddlg">
   <h2>ตั้งค่าปุ่มควบคุม</h2>
   <div id="padinfo"></div>
   <div id="padrows"></div>
+  <div class="row turbo"><label>ความเร็ว Turbo <select id="turbo"></select></label></div>
   <div class="row"><button id="padreset">ค่าเริ่มต้น</button><button id="padclose">ปิด</button></div>
 </dialog>
 <script type="module" src="src/main.js"></script>
